@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth->
                         auth
-                                .requestMatchers("/api-training/createStud").permitAll()
+                                .requestMatchers("/api-training/createStud", "/authenticate").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(withDefaults());
         return http.build();
@@ -37,6 +37,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+    @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
