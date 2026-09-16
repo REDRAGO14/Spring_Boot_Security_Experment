@@ -25,8 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->
                         auth
                                 .requestMatchers("/api-training/createStud", "/authenticate").permitAll()
-                                .anyRequest().authenticated())
-                .httpBasic(withDefaults());
+                                .anyRequest().authenticated());
         return http.build();
     }
     @Bean
