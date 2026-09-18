@@ -1,9 +1,11 @@
 package com.example.student_api.config;
 
 import com.example.student_api.Filter.JWTAuthFilter;
+import com.example.student_api.model.Permission;
 import com.example.student_api.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,6 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->
                         auth
                                 .requestMatchers("/api-training/createStud", "/authenticate").permitAll()
+                                .requestMatchers(HttpMethod.GET , "/api-training/**").hasAuthority(Permission.STUDENT_READ.name())
+                                .requestMatchers(HttpMethod.DELETE, "/api-training/**").hasAuthority(Permission.STUDENT_DELETE.name())
                                 .anyRequest().authenticated());
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -49,7 +53,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-
         return new ProviderManager(daoAuthenticationProvider);
     }
 }
