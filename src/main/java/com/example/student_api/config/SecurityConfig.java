@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
@@ -36,7 +38,7 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers("/api-training/createStud", "/authenticate").permitAll()
                                 .requestMatchers(HttpMethod.GET , "/api-training/**").hasAuthority(Permission.STUDENT_READ.name())
-                                .requestMatchers(HttpMethod.DELETE, "/api-training/**").hasAuthority(Permission.STUDENT_DELETE.name())
+//                                .requestMatchers(HttpMethod.DELETE, "/api-training/**").hasAuthority(Permission.STUDENT_DELETE.name())
                                 .anyRequest().authenticated());
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

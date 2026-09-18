@@ -1,6 +1,8 @@
 package com.example.student_api.service;
 
-import com.example.student_api.dto.StudentDTO;
+
+import com.example.student_api.Dto.StudentDTO;
+import com.example.student_api.model.Role;
 import com.example.student_api.model.Student;
 import com.example.student_api.respository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ private final StudentRepository studentRepository;
         this.studentRepository = studentRepository;
     }
       public StudentDTO create(Student dto){
+        dto.setRole(Role.ADMIN);
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Student store=studentRepository.save(dto);
         return new StudentDTO(store.getId(), store.getUsername());
