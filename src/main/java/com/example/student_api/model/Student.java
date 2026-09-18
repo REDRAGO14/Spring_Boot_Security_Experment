@@ -5,10 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -20,7 +24,8 @@ public class Student implements UserDetails {
     private Long id;
     private String username;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public Student(String username, String password) {
         this.username = username;
@@ -29,7 +34,13 @@ public class Student implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_"+ role.name()));
+        authorities.addAll(role.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                .collect(Collectors.toSet()));
+
+        return authorities;
     }
 
     @Override
